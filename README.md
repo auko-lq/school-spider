@@ -12,3 +12,9 @@
   - 尝试去**浏览器登录**看看（可能系统关闭了查询接口，也可能您没有完成教学质量评价，作者也无解）
   - 把程序**生成的文件删除**掉，重新开启
 - 发邮件时用的SMTP授权码已去除，可按需换成自己的
+
+<img src="F:\学习\笔记\markdown\img\README\查询成绩.png" alt="查询成绩" style="zoom:80%;" />
+
+<img src="F:\学习\笔记\markdown\img\README\发送邮箱.png" alt="发送邮箱" style="zoom:80%;" />
+
+<img src="F:\学习\笔记\markdown\img\README\邮件内容.png" alt="邮件内容" style="zoom:80%;" />
