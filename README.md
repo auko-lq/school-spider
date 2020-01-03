@@ -13,8 +13,8 @@
   - 把程序**生成的文件删除**掉，重新开启
 - 发邮件时用的SMTP授权码已去除，可按需换成自己的
 
-<img src="https://github.com/aukocharlie/school-spider/tree/master/imgs\查询成绩.png" alt="查询成绩" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/aukocharlie/school-spider/master/imgs/查询成绩.png" alt="查询成绩" style="zoom:80%;" />
 
-<img src="https://github.com/aukocharlie/school-spider/tree/master/imgs\发送邮箱.png" alt="发送邮箱" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/aukocharlie/school-spider/master/imgs/发送邮箱.png" alt="发送邮箱" style="zoom:80%;" />
 
-<img src="https://github.com/aukocharlie/school-spider/tree/master/imgs\邮件内容.png" alt="邮件内容" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/aukocharlie/school-spider/master/imgs/邮件内容.png" alt="邮件内容" style="zoom:80%;" />
