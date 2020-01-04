@@ -16,12 +16,14 @@ from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 from email.utils import formataddr
 from re import search, findall
+from time import sleep
 
 # 取消未验证证书警告
 packages.urllib3.disable_warnings()
 s = session()
 # cookie托管给cookiejar
 s.cookies = LWPCookieJar(filename='./cookies.txt')
+
 
 class scoreSpider:
     def __init__(self):
@@ -106,7 +108,6 @@ class scoreSpider:
     # 初始化后运行的方法
     def login(self):
         hasCookies = self.get_cookies()
-        if not self.hasTemp: print('temp文件加载失败')
         # 获取登录页面
         if not (hasCookies and self.hasTemp):
             print('\n准备手动登录...')
@@ -158,9 +159,12 @@ class scoreSpider:
                 return None
         else:
             # 通过能不能获取隐藏属性来判断是否成功自动登录
+            print('\n准备自动登录...')
             InternalVIEWSTATE = self.get_InternalHidden()
             if len(InternalVIEWSTATE) == 0:
                 print('自动登录失败！')
+                # 将hastemp取反, 来进行手动登录
+                self.hasTemp = False
                 self.login()
             else:
                 print('自动登录成功，即将开始查询成绩...')
@@ -199,6 +203,8 @@ class scoreSpider:
             self.checkCodeUrl,
             self.headers,
         )
+        if r is None:
+            raise RuntimeError('获取验证码失败，请检查网络或反馈')
         img = r.content
         # 将验证码写入本地
         local = open('checkCode.jpg', 'wb')
@@ -215,9 +221,12 @@ class scoreSpider:
 
     # 获取VIEWSTATE隐藏属性, 用于提交表单(正方反爬策略之一)
     def get_hiddenValue(self, page):
-        VIEWSTATE = findall(
-            r'<input type="hidden" name="__VIEWSTATE" value="(.*?)" />',
-            page.text)
+        try:
+            VIEWSTATE = findall(
+                r'<input type="hidden" name="__VIEWSTATE" value="(.*?)" />',
+                page.text)
+        except Exception as e:
+            return ['']
         return VIEWSTATE
 
     # cookiejar尝试接管cookie
@@ -268,6 +277,7 @@ class scoreSpider:
         r = self.postForm(self.scoreUrl, self.scoreHeaders, self.scoreForm)
         # 将成绩table里的数据取出来然后print
         result = findall((r'<td>(.*?)</td>' * 19), r.text)
+        print('\n查询结果为:\n')
         for items in result:
             temp = ''
             index = 0
@@ -284,7 +294,7 @@ class scoreSpider:
                 temp += item + '\t'
                 index = index + 1
             print('%s\n' % temp)
-        if input('\n查询结束，是否需要监听成绩(y/n):').lower().strip() == 'y':
+        if input('\n查询结束，是否需要监听以上成绩(y/n):').lower().strip() == 'y':
             self.preNum = len(result)
             self.monitor_score()
         else:
@@ -298,11 +308,13 @@ class scoreSpider:
                 print('开始监听...\n当有新成绩时，将会在这里显示并发送新成绩到您设置的邮箱...')
                 while True:
                     run_pending()
+                    sleep(60)
         else:
             self.needSend = False
             print('开始监听...\n当有新成绩时，将会在这里显示...')
             while True:
                 run_pending()
+                sleep(60)
 
     # 确认目标邮箱
     def check_send_mail(self):
@@ -379,6 +391,8 @@ if __name__ == '__main__':  # 命令行启动
     try:
         Spider = scoreSpider()  # 创建爬虫实例
         Spider.login()
-    except Exception as e:
-        print('异常 !!! '+str(e))
+    except KeyboardInterrupt as keye:
+        pass
+    except BaseException as e:
+        print('异常 !!! ' + str(e))
         input('按任意键退出')
