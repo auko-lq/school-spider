@@ -11,7 +11,7 @@ from urllib.parse import quote
 from requests.exceptions import RequestException
 from os import system
 from http.cookiejar import LWPCookieJar
-from schedule import every, run_pending
+from schedule import every, run_pending, clear
 from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 from email.utils import formataddr
@@ -337,6 +337,9 @@ class scoreSpider:
     def monitor(self):
         r = self.postForm(self.scoreUrl, self.headers, self.scoreForm)
         result = findall((r'<td>(.*?)</td>' * 19), r.text)
+        if len(result) < self.preNum:
+            clear('monitor-score')
+            raise BaseException('请求成绩失败! 请重新启动程序或反馈')
         if len(result) > self.preNum:
             # 检测到数量不一致,说明有新成绩
             self.preNum = len(result)
